@@ -21,8 +21,8 @@ class Pornocarioca extends BOT implements BotInterface
 		return 'li.list-item div.list-content p';
 	}
 	
-	public function dates()
+	public function duration()
 	{
-		
+		return 'span.duration';
 	}
 }

@@ -20,4 +20,9 @@ class BOT implements BotInterface
 	{
 		return null;
 	}
+	
+	public function duration()
+	{
+		return null;
+	}
 }

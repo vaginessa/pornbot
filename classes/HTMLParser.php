@@ -7,22 +7,37 @@ use \Curl\Curl;
 class HTMLParser
 {
 	private $document;
-	public function start(BOT $instance)
+	
+	private function getDocument($url)
 	{
 		$curl = new Curl();
 		$curl->setUserAgent('Pornbot v1.0');
 		$curl->setOpt(CURLOPT_FOLLOWLOCATION, true);
 		$curl->setOpt(CURLOPT_RETURNTRANSFER, true);
-		$curl->get($instance->url());
-		if ( $curl->error )
-		{
-			throw new Exception('Error: ' . $curl->errorCode . ': ' . $curl->errorMessage);
+		$curl->get($url);
+		if ( $curl->error ) {
+			throw new BOTException('Error: ' . $curl->errorCode . ': ' . $curl->errorMessage);
 		}
 		
-		$this->document = phpQuery::newDocumentHTML($curl->response);
-		$titles = explode("\n", $this->document->find($instance->titles())->text());
-		echo '<pre>';
-		print_r($titles);
-		echo '</pre>';
+		return phpQuery::newDocumentHTML($curl->response);
+	}
+	
+	public function start(BOT $instance)
+	{
+		try {
+			$this->document = $this->getDocument($instance->url());
+			$data = array(
+				'title' => $this->document->find($instance->titles())->text(),
+				'duration' => $this->document->find($instance->duration())->text()
+			);
+			foreach ($data as $index => &$row) 
+				$row = call_user_func_array("Format::format_{$index}", [$row]);
+			echo '<pre>';
+			print_r($data);
+			echo '</pre>';
+		} catch( BOTException $err )
+		{
+			die($err);
+		}
 	}
 }

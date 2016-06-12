@@ -26,12 +26,21 @@ class HTMLParser
 	{
 		try {
 			$this->document = $this->getDocument($instance->url());
+			
+			$title = (object)$instance->title();
+			$duration = (object)$instance->duration();
+			$thumbnail = (object)$instance->thumbnail();
+			$link = (object)$instance->link();
+			
 			$data = array(
-				'title' => $this->document->find($instance->titles())->text(),
-				'duration' => $this->document->find($instance->duration())->text()
+				'title' => $this->document->find($title->pattern)->text(),
+				'duration' => $this->document->find($duration->pattern)->text(),
+				'thumbnail' => $this->document->find($thumbnail->pattern)->elements,
+				'link' => $this->document->find($link->pattern)->elements
 			);
-			foreach ($data as $index => &$row) 
-				$row = call_user_func_array("Format::format_{$index}", [$row]);
+			foreach ($data as $index => &$row) {
+				$row = call_user_func_array("Format::format_{$index}", [$row, $instance]);
+			}
 			echo '<pre>';
 			print_r($data);
 			echo '</pre>';

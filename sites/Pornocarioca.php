@@ -16,13 +16,37 @@ class Pornocarioca extends BOT implements BotInterface
 		return 'http://www.pornocarioca.com/';
 	}
 	
-	public function titles()
+	public function title()
 	{
-		return 'li.list-item div.list-content p';
+		return array(
+			'pattern' => 'li.list-item div.list-content p',
+			'wordmatch' => ' '
+		);
 	}
 	
 	public function duration()
 	{
-		return 'span.duration';
+		return array(
+			'pattern' => 'li.list-item span.duration',
+			'wordmatch' => ':'
+		);
+	}
+	
+	public function thumbnail()
+	{
+		return array(
+			'pattern' => 'ul.list li.list-item div.thumb-image img',
+			'attr' => 'src',
+			'wordmatch' => '/wp-content/uploads/'
+		);
+	}
+	
+	public function link()
+	{
+		return array(
+			'pattern' => 'li.list-item a',
+			'attr' => 'href',
+			'wordmatch' => 'pornocarioca.com'
+		);
 	}
 }

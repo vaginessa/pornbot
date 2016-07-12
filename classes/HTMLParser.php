@@ -41,9 +41,7 @@ class HTMLParser
 			foreach ($data as $index => &$row) {
 				$row = call_user_func_array("Format::format_{$index}", [$row, $instance]);
 			}
-			echo '<pre>';
 			print_r($data);
-			echo '</pre>';
 		} catch( BOTException $err )
 		{
 			die($err);

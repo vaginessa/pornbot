@@ -2,6 +2,7 @@
 require_once($CFG->dirroot . '/classes/BotInterface.php');
 require_once($CFG->dirroot . '/classes/BotException.php');
 require_once($CFG->dirroot . '/classes/BOT.php');
+require_once($CFG->dirroot . '/classes/Database.php');
 require_once($CFG->dirroot . '/classes/Format.php');
 require_once($CFG->dirroot . '/classes/XMLParser.php');
 require_once($CFG->dirroot . '/classes/HTMLParser.php');
@@ -57,5 +58,10 @@ class Bootstrap
 		{
 			//@todo implementar JSON
 		}
+	}
+	
+	public function connect()
+	{
+		
 	}
 }

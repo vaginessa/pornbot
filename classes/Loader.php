@@ -2,6 +2,7 @@
 require_once($CFG->dirroot . '/classes/BotInterface.php');
 require_once($CFG->dirroot . '/classes/BotException.php');
 require_once($CFG->dirroot . '/classes/BOT.php');
+require_once($CFG->dirroot . '/classes/DatabaseManager.php');
 require_once($CFG->dirroot . '/classes/Database.php');
 require_once($CFG->dirroot . '/classes/Format.php');
 require_once($CFG->dirroot . '/classes/XMLParser.php');
@@ -9,6 +10,8 @@ require_once($CFG->dirroot . '/classes/HTMLParser.php');
 
 class Bootstrap
 {
+	private $database;
+	
 	/**
 	* Busca todas as classes dos sites que o bot irá buscar
 	* @return array
@@ -46,6 +49,7 @@ class Bootstrap
 	*/
 	public function start()
 	{
+		$this->db = new Database;
 		$instance = $this->get_instance();
 		
 		if ( $instance->type() == 'xml' )
@@ -58,10 +62,5 @@ class Bootstrap
 		{
 			//@todo implementar JSON
 		}
-	}
-	
-	public function connect()
-	{
-		
 	}
 }

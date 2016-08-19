@@ -35,8 +35,8 @@ class Pornocarioca extends BOT implements BotInterface
 	public function thumbnail()
 	{
 		return array(
-			'pattern' => 'ul.list li.list-item div.thumb-image img',
-			'attr' => 'src',
+			'pattern' => 'meta[itemprop="thumbnailUrl image"]',
+			'attr' => 'content',
 			'wordmatch' => '/wp-content/uploads/'
 		);
 	}

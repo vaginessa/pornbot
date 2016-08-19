@@ -13,7 +13,7 @@ class Bootstrap
 	private $database;
 	
 	/**
-	* Busca todas as classes dos sites que o bot irá buscar
+	* Busca todas as classes dos sites que o bot ira buscar
 	* @return array
 	*/
 	private function files()
@@ -29,7 +29,7 @@ class Bootstrap
 	}
 	
 	/**
-	* Cria uma instancia de um site aleatório que o bot irá buscar
+	* Cria uma instancia de um site aleatï¿½rio que o bot irï¿½ buscar
 	* @return object
 	*/
 	public function get_instance()

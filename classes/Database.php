@@ -1,34 +1,51 @@
 <?php
-class Database extends DatabaseManager
+class Database
 {
-	public function Database()
-	{
-		parent::__construct();
-		return $this->db;
-	}
-	public function insert($row)
-	{
-		$this->db->prepare(
-			'INSERT INTO `wp_posts` (post_author, post_date, post_content, post_title, post_status, comment_status, ping_status, post_name, post_modified, post_parent, guid, menu_order, post_type) VALUES(?, NOW(), ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?)');
-		$this->db->bind_param(
-			'dssssssdsds',
-			$post_author = 1,
-			$post_content = '',
-			$post_title = $row->title,
-			$post_status = 'publish',
-			$comment_status = 'open',
-			$ping_status = 'open',
-			$post_name = $row->title_guid,
-			$post_parent = 0,
-			$guid = '',
-			$menu_order = 0,
-			$post_type = 'video'
-		);
-		$this->db->execute();
-	}
-	
-	public function update($row)
-	{
-		
-	}
+    public function Database()
+    {
+        global $CFG;
+
+        $connections = array(
+            'development' => "{$CFG->db_type}://{$CFG->db_user}:{$CFG->db_pass}@{$CFG->db_host}/{$CFG->db_schema}"
+        );
+
+        $model_directory = $CFG->dirroot . '/classes/models';
+
+        ActiveRecord\Config::initialize(function ($config) use ($connections, $model_directory) {
+            $config->set_model_directory($model_directory);
+            $config->set_connections($connections);
+            $config->set_default_connection('development');
+        });
+    }
+
+    /**
+     * Processa os dados capturados no crawler
+     *
+     * @param $data
+     */
+    public function process($data)
+    {
+        $slug = format_uri($data['title']);
+        $video = new Video(
+            array(
+                'post_author' => 1,
+                'post_date' => date('Y-m-d H:i:s'),
+                'post_content' => '',
+                'post_title' => $data['title'],
+                'post_status' => 'publish',
+                'comment_status' => 'open',
+                'ping_status' => 'open',
+                'post_name' => $slug,
+                'post_modified' => date('Y-m-d H:i:s'),
+                'post_parent' => 0,
+                'guid' => "http://localhost/analnymous/videos/{$slug}",
+                'menu_order' => 0,
+                'post_type' => 'videos'
+            )
+        );
+
+        if ($video->save()) {
+            printlog('Inseriu: ' . $data['title']);
+        }
+    }
 }

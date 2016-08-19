@@ -1,7 +1,7 @@
 <?php
-require_once($CFG->dirroot . '/classes/Curl.php');
+require_once($CFG->libdir . '/curl/Curl.php');
 require_once($CFG->dirroot . '/classes/CaseInsensitiveArray.php');
-require_once($CFG->dirroot . '/classes/PHPQuery.php');
+require_once($CFG->libdir . '/phpquery/PHPQuery.php');
 use \Curl\Curl;
 
 class HTMLParser
@@ -18,20 +18,22 @@ class HTMLParser
         $curl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
         $curl->get($url);
         if ($curl->error) {
-            throw new BOTException('Error: ' . $curl->errorCode . ': ' . $curl->errorMessage);
+            throw new BOTException('Link inválido: ' . $url);
         }
 
         return phpQuery::newDocumentHTML($curl->response);
     }
 
-    public function start(BOT $instance)
+    public function start(BOT $instance, Database $db)
     {
-        try {
-            $this->document = $this->getDocument($instance->url());
-            $url = (object)$instance->link();
-            $links = $this->document->find($url->pattern)->elements;
-            foreach ($links as $link) {
-                $this->document = $this->getDocument($link->getAttribute($url->attr));
+        $this->document = $this->getDocument($instance->url());
+        $url = (object)$instance->link();
+        $links = $this->document->find($url->pattern)->elements;
+        foreach ($links as $link) {
+            try {
+                $pornurl = $link->getAttribute($url->attr);
+                $this->document = $this->getDocument($pornurl);
+
                 $title = (object)$instance->title();
                 $duration = (object)$instance->duration();
                 $thumb = (object)$instance->thumbnail();
@@ -48,15 +50,17 @@ class HTMLParser
                     'title' => $title,
                     'duration' => $duration,
                     'thumbnail' => $thumbnail->getAttribute($thumb->attr),
-                    'link' => $link->getAttribute($url->attr)
+                    'link' => $pornurl
                 );
                 foreach ($data as $index => &$row) {
                     $row = call_user_func_array("Format::format_{$index}", [$row, $instance]);
                 }
-                print_r($data);
+
+                $db->process($data);
+            } catch (BOTException $err) {
+                printlog($err->getMessage());
             }
-        } catch (BOTException $err) {
-            print 'Err';
+
         }
     }
 }

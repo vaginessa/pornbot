@@ -28,7 +28,10 @@ class DatabaseManager
 		
 		return $instance;
 	}
-	
+
+    /**
+     * DatabaseManager constructor.
+     */
 	public function DatabaseManager()
 	{
 		$this->db = $this->get_instance();

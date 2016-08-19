@@ -16,13 +16,35 @@ class BOT implements BotInterface
 		return null;
 	}
 	
-	public function titles()
+	public function title()
 	{
-		return null;
+		return array(
+			'pattern' => '',
+			'wordmatch' => ''
+		);
 	}
-	
+
 	public function duration()
 	{
-		return null;
+		return array(
+			'pattern' => '',
+			'wordmatch' => ''
+		);
+	}
+
+	public function thumbnail()
+	{
+		return array(
+			'pattern' => '',
+			'wordmatch' => ''
+		);
+	}
+
+	public function link()
+	{
+		return array(
+			'pattern' => '',
+			'wordmatch' => ''
+		);
 	}
 }

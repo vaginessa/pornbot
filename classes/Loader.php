@@ -57,6 +57,8 @@ class Bootstrap
         $this->db = new Database;
         $instance = $this->get_instance();
 
+        printlog('Iniciando para o site: ' . $instance->name());
+
         if ($instance->type() == 'xml') {
             (new XMLParser)->start($instance, $this->db);
         } elseif ($instance->type() == 'html') {

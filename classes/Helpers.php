@@ -48,6 +48,7 @@ function debug($pr, $die = true)
  */
 function format_uri($string, $separator = '-')
 {
+    $string = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
     $accents_regex = '~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i';
     $special_cases = array('&' => 'and', "'" => '');
     $string = mb_strtolower(trim($string), 'UTF-8');

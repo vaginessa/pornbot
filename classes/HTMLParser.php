@@ -28,19 +28,51 @@ class HTMLParser
     {
         $this->document = $this->getDocument($instance->url());
         $url = (object)$instance->link();
-        $links = $this->document->find($url->pattern)->elements;
+
+        if (!$url->regexp) {
+            $links = $this->document->find($url->pattern)->elements;
+        } else {
+            preg_match_all($url->pattern, $this->document->html(), $links);
+            $links = isset($links[1]) ? $links[1] : array();
+        }
+
         foreach ($links as $link) {
             try {
                 $pornurl = $link->getAttribute($url->attr);
                 $this->document = $this->getDocument($pornurl);
 
-                $title = (object)$instance->title();
-                $duration = (object)$instance->duration();
-                $thumb = (object)$instance->thumbnail();
+                $titleinstance = (object)$instance->title();
+                $durationinstance = (object)$instance->duration();
+                $thumbinstance = (object)$instance->thumbnail();
 
-                $title = $this->document->find($title->pattern)->eq(0)->text();
-                $duration = $this->document->find($duration->pattern)->eq(0)->text();
-                $thumbnail = $this->document->find($thumb->pattern)->get(0);
+                if (!$titleinstance->regexp) {
+
+                    if ($title = $this->document->find($titleinstance->pattern)->get(0)) {
+                        $title = $title->getAttribute($titleinstance->attr);
+                    }
+
+                } else {
+                    preg_match($titleinstance->pattern, $this->document->html(), $title);
+                    $title = isset($title[1]) ? $title[1] : false;
+                }
+
+                if (!$durationinstance->regexp) {
+                    if ($duration = $this->document->find($durationinstance->pattern)->get(0)) {
+                        $duration = $duration->getAttribute($durationinstance->attr);
+                    }
+                } else {
+                    preg_match($durationinstance->pattern, $this->document->html(), $duration);
+                    $duration = isset($duration[1]) ? $duration[1] : false;
+                }
+
+                if (!$thumbinstance->regexp) {
+                    if ($thumbnail = $this->document->find($thumbinstance->pattern)->get(0)) {
+                        $thumbnail = $thumbnail->getAttribute($thumbinstance->attr);
+                    }
+                } else {
+                    preg_match($thumbinstance->pattern, $this->document->html(), $thumbnail);
+                    $thumbnail = isset($thumbnail[1]) ? $thumbnail[1] : false;
+                }
 
                 if (!$thumbnail || !$title || !$duration) {
                     continue;
@@ -49,7 +81,7 @@ class HTMLParser
                 $data = array(
                     'title' => $title,
                     'duration' => $duration,
-                    'thumbnail' => $thumbnail->getAttribute($thumb->attr),
+                    'thumbnail' => $thumbnail,
                     'link' => $pornurl
                 );
                 foreach ($data as $index => &$row) {

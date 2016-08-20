@@ -1,4 +1,5 @@
 <?php
+
 class Database
 {
     public function Database()
@@ -26,26 +27,53 @@ class Database
     public function process($data)
     {
         $slug = format_uri($data['title']);
-        $video = new Video(
-            array(
-                'post_author' => 1,
-                'post_date' => date('Y-m-d H:i:s'),
-                'post_content' => '',
-                'post_title' => $data['title'],
-                'post_status' => 'publish',
-                'comment_status' => 'open',
-                'ping_status' => 'open',
-                'post_name' => $slug,
-                'post_modified' => date('Y-m-d H:i:s'),
-                'post_parent' => 0,
-                'guid' => "http://localhost/analnymous/videos/{$slug}",
-                'menu_order' => 0,
-                'post_type' => 'videos'
-            )
+        $video = Video::find(array('conditions' => array('post_name' => $slug)));
+        $new_video = true;
+
+        if (is_object($video)) {
+            $new_video = false;
+        }
+
+        $attributes = array(
+            'post_author' => 1,
+            'post_date' => date('Y-m-d H:i:s'),
+            'post_date_gmt' => date('Y-m-d H:i:s'),
+            'post_content' => '',
+            'post_title' => $data['title'],
+            'post_excerpt' => '',
+            'post_status' => 'publish',
+            'comment_status' => 'open',
+            'ping_status' => 'open',
+            'post_password' => '',
+            'post_name' => $slug,
+            'to_ping' => '',
+            'pinged' => '',
+            'post_modified' => date('Y-m-d H:i:s'),
+            'post_modified_gmt' => date('Y-m-d H:i:s'),
+            'post_content_filtered' => '',
+            'post_parent' => 0,
+            'guid' => "http://localhost/analnymous/videos/{$slug}",
+            'menu_order' => 0,
+            'post_type' => 'videos',
+            'post_mime_type' => '',
+            'comment_count' => 0
         );
 
-        if ($video->save()) {
-            printlog('Inseriu: ' . $data['title']);
+        $videomodel = new Video($attributes, true, false, $new_video);
+
+        // Se não existir
+        if (!$new_video) {
+
+            // Atualiza o video já existente
+            $videomodel->update_attribute('id', $video->id);
+            printlog('Atualizou o video: ' . $data['title']);
+
+        } else {
+
+            // Insere na tabela
+            printlog('Inseriu o video: ' . $data['title']);
         }
+
+        $videomodel->save();
     }
 }

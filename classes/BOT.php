@@ -20,7 +20,7 @@ class BOT implements BotInterface
 	{
 		return array(
 			'pattern' => '',
-			'wordmatch' => ''
+            'regexp' => false
 		);
 	}
 
@@ -28,7 +28,7 @@ class BOT implements BotInterface
 	{
 		return array(
 			'pattern' => '',
-			'wordmatch' => ''
+            'regexp' => false
 		);
 	}
 
@@ -36,7 +36,7 @@ class BOT implements BotInterface
 	{
 		return array(
 			'pattern' => '',
-			'wordmatch' => ''
+            'regexp' => false
 		);
 	}
 
@@ -44,7 +44,7 @@ class BOT implements BotInterface
 	{
 		return array(
 			'pattern' => '',
-			'wordmatch' => ''
+            'regexp' => false
 		);
 	}
 }

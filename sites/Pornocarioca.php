@@ -19,16 +19,16 @@ class Pornocarioca extends BOT implements BotInterface
 	public function title()
 	{
 		return array(
-			'pattern' => 'li.list-item div.list-content p',
-			'wordmatch' => ' '
+			'pattern' => '/<title>([^\|]+)/i',
+            'regexp' => true
 		);
 	}
 	
 	public function duration()
 	{
 		return array(
-			'pattern' => 'li.list-item span.duration',
-			'wordmatch' => ':'
+			'pattern' => '/(\d{2}\:\d{2})\s</',
+            'regexp' => true
 		);
 	}
 	
@@ -37,7 +37,7 @@ class Pornocarioca extends BOT implements BotInterface
 		return array(
 			'pattern' => 'meta[itemprop="thumbnailUrl image"]',
 			'attr' => 'content',
-			'wordmatch' => '/wp-content/uploads/'
+            'regexp' => false
 		);
 	}
 	
@@ -46,7 +46,7 @@ class Pornocarioca extends BOT implements BotInterface
 		return array(
 			'pattern' => 'li.list-item a',
 			'attr' => 'href',
-			'wordmatch' => 'pornocarioca.com'
+            'regexp' => false
 		);
 	}
 }

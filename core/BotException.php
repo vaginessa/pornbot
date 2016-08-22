@@ -1,6 +1,8 @@
 <?php
 
-class BOTException extends Exception
+namespace PornBOT\Exception;
+
+class BOTException extends \Exception
 {
 	public function __toString()
 	{

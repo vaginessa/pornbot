@@ -1133,7 +1133,7 @@ class Model
 	 *
 	 * @var array
 	 */
-	static $VALID_OPTIONS = array('conditions', 'limit', 'offset', 'order', 'select', 'joins', 'include', 'readonly', 'group', 'from', 'having');
+	static $VALID_OPTIONS = array('conditions', 'limit', 'offset', 'order', 'select', 'joins', 'core', 'readonly', 'group', 'from', 'having');
 
 	/**
 	 * Enables the use of dynamic finders.
@@ -1363,7 +1363,7 @@ class Model
 	 * <ul>
 	 * <li><b>select:</b> A SQL fragment for what fields to return such as: '*', 'people.*', 'first_name, last_name, id'</li>
 	 * <li><b>joins:</b> A SQL join fragment such as: 'JOIN roles ON(roles.user_id=user.id)' or a named association on the model</li>
-	 * <li><b>include:</b> TODO not implemented yet</li>
+	 * <li><b>core:</b> TODO not implemented yet</li>
 	 * <li><b>conditions:</b> A SQL fragment such as: 'id=1', array('id=1'), array('name=? and id=?','Tito',1), array('name IN(?)', array('Tito','Bob')),
 	 * array('name' => 'Tito', 'id' => 1)</li>
 	 * <li><b>limit:</b> Number of records to limit the query to</li>
@@ -1588,7 +1588,7 @@ class Model
 	 * <li><b>excluded:</b> a string or array of attributes to be excluded.</li>
 	 * <li><b>methods:</b> a string or array of methods to invoke. The method's name will be used as a key for the final attributes array
 	 * along with the method's returned value</li>
-	 * <li><b>include:</b> a string or array of associated models to include in the final serialized product.</li>
+	 * <li><b>core:</b> a string or array of associated models to core in the final serialized product.</li>
 	 * </ul>
 	 *
 	 * @param string $type Either Xml or Json

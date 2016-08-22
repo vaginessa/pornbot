@@ -1,5 +1,5 @@
 <?php
-class Pornocarioca extends BOT implements BotInterface
+class Pornocarioca extends \PornBOT\BOT implements \PornBOT\BotInterface
 {
 	public function name()
 	{

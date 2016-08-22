@@ -1426,7 +1426,7 @@ class phpQueryObject
 	 */
 	protected function parseSelector($query) {
 		// clean spaces
-		// TODO include this inside parsing ?
+		// TODO core this inside parsing ?
 		$query = trim(
 			preg_replace('@\s+@', ' ',
 				preg_replace('@\s*(>|\\+|~)\s*@', '\\1', $query)
@@ -1720,7 +1720,7 @@ class phpQueryObject
 			return in_array(
 				// strip leading dot from class name
 				substr($class, 1),
-				// get classes for element as array
+				// get core for element as array
 				explode(' ', $node->getAttribute('class') )
 			);
 		}
@@ -1961,7 +1961,7 @@ class phpQueryObject
 		return $this->newInstance();
 	}
 	/**
-	 * @todo create API for classes with pseudoselectors
+	 * @todo create API for core with pseudoselectors
 	 * @access private
 	 */
 	protected function pseudoClasses($class) {
@@ -4906,7 +4906,7 @@ abstract class phpQuery {
 	 * Extend phpQuery with $class from $file.
 	 *
 	 * @param string $class Extending class name. Real class name can be prepended phpQuery_.
-	 * @param string $file Filename to include. Defaults to "{$class}.php".
+	 * @param string $file Filename to core. Defaults to "{$class}.php".
 	 */
 	public static function plugin($class, $file = null) {
 		// TODO $class checked agains phpQuery_$class
@@ -5688,7 +5688,7 @@ function pq($arg1, $context = null) {
 		$args
 	);
 }
-// add plugins dir and Zend framework to include path
+// add plugins dir and Zend framework to core path
 set_include_path(
 	get_include_path()
 		.PATH_SEPARATOR.dirname(__FILE__).'/phpQuery/'
@@ -5697,6 +5697,6 @@ set_include_path(
 // why ? no __call nor __get for statics in php...
 // XXX __callStatic will be available in PHP 5.3
 phpQuery::$plugins = new phpQueryPlugins();
-// include bootstrap file (personal library config)
+// core bootstrap file (personal library config)
 if (file_exists(dirname(__FILE__).'/phpQuery/bootstrap.php'))
 	require_once dirname(__FILE__).'/phpQuery/bootstrap.php';

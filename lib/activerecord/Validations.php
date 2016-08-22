@@ -1,6 +1,6 @@
 <?php
 /**
- * These two classes have been <i>heavily borrowed</i> from Ruby on Rails' ActiveRecord so much that
+ * These two core have been <i>heavily borrowed</i> from Ruby on Rails' ActiveRecord so much that
  * this piece can be considered a straight port. The reason for this is that the vaildation process is
  * tricky due to order of operations/events. The former combined with PHP's odd typecasting means
  * that it was easier to formulate this piece base on the rails code.

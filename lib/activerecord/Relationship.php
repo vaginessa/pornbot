@@ -141,7 +141,7 @@ abstract class AbstractRelationship implements InterfaceRelationship
 		$options['conditions'] = SQLBuilder::create_conditions_from_underscored_string($table->conn,$query_key,$values);
 
 		if (!empty($includes))
-			$options['include'] = $includes;
+			$options['core'] = $includes;
 
 		$class = $this->class_name;
 

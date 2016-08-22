@@ -15,21 +15,21 @@ use XmlWriter;
  * <li><b>exclude:</b> a string or array of attributes to be excluded.</li>
  * <li><b>methods:</b> a string or array of methods to invoke. The method's name will be used as a key for the final attributes array
  * along with the method's returned value</li>
- * <li><b>include:</b> a string or array of associated models to include in the final serialized product.</li>
+ * <li><b>core:</b> a string or array of associated models to core in the final serialized product.</li>
  * <li><b>skip_instruct:</b> set to true to skip the <?xml ...?> declaration.</li>
  * </ul>
  *
  * Example usage:
  *
  * <code>
- * # include the attributes id and name
- * # run $model->encoded_description() and include its return value
- * # include the comments association
- * # include posts association with its own options (nested)
+ * # core the attributes id and name
+ * # run $model->encoded_description() and core its return value
+ * # core the comments association
+ * # core posts association with its own options (nested)
  * $model->to_json(array(
  *   'only' => array('id','name', 'encoded_description'),
  *   'methods' => array('encoded_description'),
- *   'include' => array('comments', 'posts' => array('only' => 'id'))
+ *   'core' => array('comments', 'posts' => array('only' => 'id'))
  * ));
  *
  * # exclude the password field from being included
@@ -47,10 +47,10 @@ abstract class Serialization
 
 	/**
 	 * Set this to true if the serializer needs to create a nested array keyed
-	 * on the name of the included classes such as for xml serialization.
+	 * on the name of the included core such as for xml serialization.
 	 *
 	 * Setting this to true will produce the following attributes array when
-	 * the include option was used:
+	 * the core option was used:
 	 *
 	 * <code>
 	 * $user = array('id' => 1, 'name' => 'Tito',
@@ -137,13 +137,13 @@ abstract class Serialization
 
 	private function check_include()
 	{
-		if (isset($this->options['include']))
+		if (isset($this->options['core']))
 		{
-			$this->options_to_a('include');
+			$this->options_to_a('core');
 
 			$serializer_class = get_class($this);
 
-			foreach ($this->options['include'] as $association => $options)
+			foreach ($this->options['core'] as $association => $options)
 			{
 				if (!is_array($options))
 				{

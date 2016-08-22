@@ -6,7 +6,7 @@ namespace ActiveRecord;
 use ReflectionClass;
 
 /**
- * Simple class that caches reflections of classes.
+ * Simple class that caches reflections of core.
  *
  * @package ActiveRecord
  */

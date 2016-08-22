@@ -51,7 +51,7 @@ class Config extends Singleton
 	private $connections = array();
 
 	/**
-	 * Directory for the auto_loading of model classes.
+	 * Directory for the auto_loading of model core.
 	 *
 	 * @see activerecord_autoload
 	 * @var string

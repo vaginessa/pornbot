@@ -1,19 +1,24 @@
 <?php
-require_once($CFG->dirroot . '/classes/Helpers.php');
-require_once($CFG->dirroot . '/classes/BotInterface.php');
-require_once($CFG->dirroot . '/classes/BotException.php');
-require_once($CFG->dirroot . '/classes/BOT.php');
-require_once($CFG->dirroot . '/classes/DatabaseManager.php');
-require_once($CFG->dirroot . '/classes/Database.php');
-require_once($CFG->dirroot . '/classes/Format.php');
-require_once($CFG->dirroot . '/classes/XMLParser.php');
-require_once($CFG->dirroot . '/classes/HTMLParser.php');
-require_once($CFG->dirroot . '/lib/activerecord/ActiveRecord.php');
+namespace PornBOT;
 
+global $CFG;
+require_once($CFG->dirroot . '/core/Helpers.php');
+require_once($CFG->dirroot . '/core/ExportInterface.php');
+require_once($CFG->dirroot . '/core/BotInterface.php');
+require_once($CFG->dirroot . '/core/BotException.php');
+require_once($CFG->dirroot . '/core/BOT.php');
+require_once($CFG->dirroot . '/core/Format.php');
+require_once($CFG->dirroot . '/core/XMLParser.php');
+require_once($CFG->dirroot . '/core/HTMLParser.php');
+
+/**
+ * Class Bootstrap
+ * @package PornBOT
+ */
 class Bootstrap
 {
     /**
-     * Busca todas as classes dos sites que o bot ira buscar
+     * Busca todas as core dos sites que o bot ira buscar
      * @return array
      */
     private function files()
@@ -46,6 +51,20 @@ class Bootstrap
         return new $classes[mt_rand(0, sizeof($classes) - 1)];
     }
 
+
+    /**
+     * Exporta os dados dos videos para a classe configurada
+     *
+     * @return mixed
+     */
+    private function export_instance()
+    {
+        global $CFG;
+        require_once($CFG->dirroot . '/export.php');
+        $class_name = "export_{$CFG->export_to}";
+        return new $class_name;
+    }
+
     /**
      * Inicia e executa o bot
      */
@@ -54,15 +73,15 @@ class Bootstrap
         global $CFG;
         set_time_limit($CFG->timeout);
 
-        $this->db = new Database;
+        $export = $this->export_instance();
         $instance = $this->get_instance();
 
         printlog('Iniciando para o site: ' . $instance->name());
 
         if ($instance->type() == 'xml') {
-            (new XMLParser)->start($instance, $this->db);
+            (new \PornBOT\Parsers\XMLParser)->start($instance, $export);
         } elseif ($instance->type() == 'html') {
-            (new HTMLParser)->start($instance, $this->db);
+            (new \PornBOT\Parsers\HTMLParser)->start($instance, $export);
         } elseif ($instance->type() == 'json') {
             //@todo implementar JSON
         }

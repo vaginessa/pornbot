@@ -194,7 +194,7 @@ class Table
 	{
 		$sql = $this->options_to_sql($options);
 		$readonly = (array_key_exists('readonly',$options) && $options['readonly']) ? true : false;
-		$eager_load = array_key_exists('include',$options) ? $options['include'] : null;
+		$eager_load = array_key_exists('core',$options) ? $options['core'] : null;
 
 		return $this->find_by_sql($sql->to_s(),$sql->get_where_values(), $readonly, $eager_load);
 	}
@@ -241,7 +241,7 @@ class Table
 
 		foreach ($includes as $index => $name)
 		{
-			// nested include
+			// nested core
 			if (is_array($name))
 			{
 				$nested_includes = count($name) > 1 ? $name : $name[0];

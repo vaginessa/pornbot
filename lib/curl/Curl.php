@@ -2,6 +2,7 @@
 
 namespace Curl;
 
+require_once('CaseInsensitiveArray.php');
 
 class Curl
 {

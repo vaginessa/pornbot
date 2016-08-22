@@ -1,4 +1,5 @@
 <?php
+namespace PornBOT;
 
 abstract class Format
 {

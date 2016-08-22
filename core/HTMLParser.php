@@ -1,13 +1,33 @@
 <?php
-require_once($CFG->libdir . '/curl/Curl.php');
-require_once($CFG->dirroot . '/classes/CaseInsensitiveArray.php');
-require_once($CFG->libdir . '/phpquery/PHPQuery.php');
-use \Curl\Curl;
+namespace PornBOT\Parsers;
 
+global $CFG;
+require_once($CFG->libdir . '/curl/Curl.php');
+require_once($CFG->libdir . '/phpquery/PHPQuery.php');
+
+use \Curl\Curl;
+use PornBOT\BOT as BOT;
+use PornBOT\Exception\BOTException as BotException;
+
+/**
+ * Class HTMLParser
+ * @package PornBOT\Parsers
+ */
 class HTMLParser
 {
+    /**
+     * DOMElement da página
+     * @var phpQueryObject
+     */
     private $document;
 
+    /**
+     * Busca o DOMElement html a partir de um link
+     *
+     * @param $url
+     * @return \phpQueryObject|\QueryTemplatesParse|\QueryTemplatesSource|\QueryTemplatesSourceQuery
+     * @throws BotException
+     */
     private function getDocument($url)
     {
         $curl = new Curl();
@@ -21,10 +41,17 @@ class HTMLParser
             throw new BOTException('Link inválido: ' . $url);
         }
 
-        return phpQuery::newDocumentHTML($curl->response);
+        return \phpQuery::newDocumentHTML($curl->response);
     }
 
-    public function start(BOT $instance, Database $db)
+    /**
+     * Inicia o bot
+     *
+     * @param BOT $instance
+     * @param $export
+     * @return null
+     */
+    public function start(BOT $instance, $export)
     {
         $this->document = $this->getDocument($instance->url());
         $url = (object)$instance->link();
@@ -74,21 +101,21 @@ class HTMLParser
                     $thumbnail = isset($thumbnail[1]) ? $thumbnail[1] : false;
                 }
 
-                if (!$thumbnail || !$title || !$duration) {
-                    continue;
-                }
+                if ($thumbnail && $title && $duration) {
 
-                $data = array(
-                    'title' => $title,
-                    'duration' => $duration,
-                    'thumbnail' => $thumbnail,
-                    'link' => $pornurl
-                );
-                foreach ($data as $index => &$row) {
-                    $row = call_user_func_array("Format::format_{$index}", [$row, $instance]);
-                }
+                    $data = array(
+                        'title' => $title,
+                        'duration' => $duration,
+                        'thumbnail' => $thumbnail,
+                        'link' => $pornurl
+                    );
 
-                $db->process($data);
+                    foreach ($data as $index => &$row) {
+                        $row = call_user_func_array("\\PornBOT\\Format::format_{$index}", [$row, $instance]);
+                    }
+
+                    $export->process($data);
+                }
             } catch (BOTException $err) {
                 printlog($err->getMessage());
             }

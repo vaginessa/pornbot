@@ -1,4 +1,6 @@
 <?php
+namespace PornBOT;
+
 interface BotInterface
 {
 	public function name();

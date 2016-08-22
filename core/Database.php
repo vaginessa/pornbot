@@ -1,7 +1,13 @@
 <?php
 
+/**
+ * Class Database
+ */
 class Database
 {
+    /**
+     * Database constructor.
+     */
     public function Database()
     {
         global $CFG;
@@ -10,7 +16,7 @@ class Database
             'development' => "{$CFG->db_type}://{$CFG->db_user}:{$CFG->db_pass}@{$CFG->db_host}/{$CFG->db_schema}"
         );
 
-        $model_directory = $CFG->dirroot . '/classes/models';
+        $model_directory = $CFG->dirroot . '/core/models';
 
         ActiveRecord\Config::initialize(function ($config) use ($connections, $model_directory) {
             $config->set_model_directory($model_directory);
@@ -26,13 +32,49 @@ class Database
      */
     public function process($data)
     {
+        $post_id = $this->insert_post($data);
+
+        $customfields = array(
+            'duracao' => $data['duration'],
+            'views' => 0
+        );
+
+        foreach ($customfields as $meta_key => $meta_value) {
+            $this->insert_custom($post_id, $meta_key, $meta_value);
+        }
+    }
+
+    /**
+     * Insere um campo de postagem personalizado
+     *
+     * @param $post_id
+     * @param $meta_key
+     * @param $meta_value
+     */
+    private function insert_custom($post_id, $meta_key, $meta_value)
+    {
+        $customfield = new CustomField(
+            array(
+                'post_id' => $post_id,
+                'meta_key' => $meta_key,
+                'meta_value' => $meta_value
+            )
+        );
+
+        $customfield->save();
+    }
+
+    /**
+     * Insere uma postagem no banco de dados e retorna o ID
+     *
+     * @param $data
+     * @return int
+     */
+    private function insert_post($data)
+    {
         $slug = format_uri($data['title']);
         $video = Video::find(array('conditions' => array('post_name' => $slug)));
-        $new_video = true;
-
-        if (is_object($video)) {
-            $new_video = false;
-        }
+        $new_video = !is_object($video);
 
         $attributes = array(
             'post_author' => 1,
@@ -63,17 +105,16 @@ class Database
 
         // Se não existir
         if (!$new_video) {
-
             // Atualiza o video já existente
             $videomodel->update_attribute('id', $video->id);
+            $videomodel->save();
             printlog('Atualizou o video: ' . $data['title']);
-
         } else {
-
             // Insere na tabela
+            $videomodel->save();
             printlog('Inseriu o video: ' . $data['title']);
         }
 
-        $videomodel->save();
+        return $videomodel->id;
     }
 }

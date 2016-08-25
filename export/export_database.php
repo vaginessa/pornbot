@@ -1,6 +1,17 @@
 <?php
+/**
+ * Version information
+ *
+ * @package    pornbot
+ * @copyright  2016 Joseph Felix
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 require_once($CFG->libdir . '/activerecord/ActiveRecord.php');
 
+/**
+ * Class export_database
+ */
 class export_database implements \PornBOT\Export\ExportInterface
 {
     /**
@@ -27,9 +38,8 @@ class export_database implements \PornBOT\Export\ExportInterface
 
     /**
      * Processa o registro buscado pelo bot
-     *
      * @param $data
-     * @return null
+     * @return
      */
     public function process($data)
     {

@@ -16,6 +16,7 @@ require_once($CFG->dirroot . '/core/BotInterface.php');
 require_once($CFG->dirroot . '/core/BotException.php');
 require_once($CFG->dirroot . '/core/BOT.php');
 require_once($CFG->dirroot . '/core/Format.php');
+require_once($CFG->dirroot . '/core/Prepare.php');
 require_once($CFG->dirroot . '/core/XMLParser.php');
 require_once($CFG->dirroot . '/core/HTMLParser.php');
 

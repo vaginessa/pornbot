@@ -15,6 +15,7 @@ require_once($CFG->libdir . '/phpquery/PHPQuery.php');
 
 use \Curl\Curl;
 use PornBOT\BOT as BOT;
+use PornBOT\Prepare as Prepare;
 use PornBOT\Exception\BOTException as BotException;
 
 /**
@@ -63,51 +64,24 @@ class HTMLParser
     {
         $this->document = $this->getDocument($instance->url());
         $url = (object)$instance->link();
+        $prepare = new Prepare($this->document);
 
-        if (!$url->regexp) {
-            $links = $this->document->find($url->pattern)->elements;
-        } else {
-            preg_match_all($url->pattern, $this->document->html(), $links);
-            $links = isset($links[1]) ? $links[1] : array();
-        }
+        try {
+            foreach ($prepare->prepare_links($url) as $link) {
 
-        foreach ($links as $link) {
-            try {
-                $pornurl = $link->getAttribute($url->attr);
+                $pornurl = $prepare->prepare_link($url, $link);
+
                 $this->document = $this->getDocument($pornurl);
+
+                $prepare->setDocument($this->document);
 
                 $titleinstance = (object)$instance->title();
                 $durationinstance = (object)$instance->duration();
                 $thumbinstance = (object)$instance->thumbnail();
 
-                if (!$titleinstance->regexp) {
-
-                    if ($title = $this->document->find($titleinstance->pattern)->get(0)) {
-                        $title = $title->getAttribute($titleinstance->attr);
-                    }
-
-                } else {
-                    preg_match($titleinstance->pattern, $this->document->html(), $title);
-                    $title = isset($title[1]) ? $title[1] : false;
-                }
-
-                if (!$durationinstance->regexp) {
-                    if ($duration = $this->document->find($durationinstance->pattern)->get(0)) {
-                        $duration = $duration->getAttribute($durationinstance->attr);
-                    }
-                } else {
-                    preg_match($durationinstance->pattern, $this->document->html(), $duration);
-                    $duration = isset($duration[1]) ? $duration[1] : false;
-                }
-
-                if (!$thumbinstance->regexp) {
-                    if ($thumbnail = $this->document->find($thumbinstance->pattern)->get(0)) {
-                        $thumbnail = $thumbnail->getAttribute($thumbinstance->attr);
-                    }
-                } else {
-                    preg_match($thumbinstance->pattern, $this->document->html(), $thumbnail);
-                    $thumbnail = isset($thumbnail[1]) ? $thumbnail[1] : false;
-                }
+                $title = $prepare->prepare_title($titleinstance);
+                $duration = $prepare->prepare_duration($durationinstance);
+                $thumbnail = $prepare->prepare_thumbnail($thumbinstance);
 
                 if ($thumbnail && $title && $duration) {
 
@@ -124,10 +98,12 @@ class HTMLParser
 
                     $export->process($data);
                 }
-            } catch (BOTException $err) {
-                printlog($err->getMessage());
             }
 
+        } catch (BOTException $err) {
+            printlog($err->getMessage());
         }
+
+
     }
 }
